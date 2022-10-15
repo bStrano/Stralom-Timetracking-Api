@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - data:/data/db/postgres
+    env_file:
+      - .env
+  api:
+    working_dir: '/app'
+    build:
+      context: ./
+      dockerfile: Dockerfile-dev
+    ports:
+      - '3000:3000'
+    volumes:
+      - logs:/app/logs
+      - ./:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+volumes:
+  data:
+  logs:
+
+
