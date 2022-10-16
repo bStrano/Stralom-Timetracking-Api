@@ -10,19 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id         Int          @id @default(autoincrement())
-  email      String       @unique
-  name       String
-  phone      String
-  TimeRecord TimeRecord[]
-}
 
 model TimeRecord {
-  id     Int    @id @default(autoincrement())
+  id     Int      @id @default(autoincrement())
   title  String
   start  DateTime
-  end    DateTime
+  end    DateTime?
   userId Int
-  user   User   @relation(fields: [userId], references: [id])
 }
