@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 npx prisma generate
 npx prisma migrate dev --name init
-npm run-script start:dev
+yarn start:dev
