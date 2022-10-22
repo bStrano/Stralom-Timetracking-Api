@@ -32,6 +32,16 @@ export class RecordRepository {
     return plainToInstance(Record, recordPrisma);
   }
 
+  async findCurrent(userId: number) {
+    const recordPrisma = await this.prisma.timeRecord.findFirst({
+      where: {
+        userId,
+        end: null,
+      },
+    });
+    return plainToInstance(Record, recordPrisma);
+  }
+
   async findAll(userId: number) {
     const recordPrisma = await this.prisma.timeRecord.findMany({
       where: {

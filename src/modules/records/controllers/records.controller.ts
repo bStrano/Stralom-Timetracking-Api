@@ -32,6 +32,11 @@ export class RecordsController {
     return this.recordsService.findAll(1);
   }
 
+  @Get('/current')
+  findCurrent() {
+    return this.recordsService.findCurrent(1);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.recordsService.findById(+id);

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -13,6 +14,10 @@ export class RecordsService {
   constructor(private recordRepository: RecordRepository) {}
 
   async startTracking(userId: number, createRecordDto: StartRecordDto) {
+    const current = await this.findCurrent(userId);
+    if (current) {
+      throw new BadRequestException('Already have a record started.');
+    }
     const record = new Record();
     record.title = createRecordDto.title;
     record.userId = userId;
@@ -22,6 +27,7 @@ export class RecordsService {
 
   async stopTracking(userId: number, recordId: number) {
     const record = await this.findById(recordId);
+    if (record.userId != userId) throw new ForbiddenException();
     if (!record) throw new NotFoundException('Record not found.');
     if (record.isFinished())
       throw new BadRequestException('Already finished record.');
@@ -31,6 +37,10 @@ export class RecordsService {
 
   findAll(userId: number) {
     return this.recordRepository.findAll(userId);
+  }
+
+  findCurrent(userId: number) {
+    return this.recordRepository.findCurrent(userId);
   }
 
   findById(id: number) {
