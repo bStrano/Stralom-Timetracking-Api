@@ -47,6 +47,11 @@ export class RecordRepository {
       where: {
         userId,
       },
+      orderBy: [
+        {
+          start: 'desc',
+        },
+      ],
     });
     return plainToInstance(Record, recordPrisma);
   }
