@@ -14,6 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { StartRecordDto } from '../dto/start-record.dto';
 import { RecordPresenter } from '../presenters/records.presenters';
 import { ListRecordOptionalParamsDto } from '../dto/list-record.dto';
+import { Record } from '../entities/record.entity';
 
 @ApiTags('Time Records')
 @Controller('records')
@@ -22,6 +23,11 @@ export class RecordsController {
     private readonly recordsService: RecordsService,
     private readonly recordsPresenter: RecordPresenter,
   ) {}
+
+  @Post('/')
+  save(@Body() record: Record) {
+    return this.recordsService.save(1, record);
+  }
 
   @Post('/start')
   startTracking(@Body() createRecordDto: StartRecordDto) {

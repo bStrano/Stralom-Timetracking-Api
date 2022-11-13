@@ -9,7 +9,9 @@ export class RecordRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(record: Omit<Record, 'id'>) {
-    const recordPrisma = await this.prisma.timeRecord.create({ data: record });
+    const recordPrisma = await this.prisma.timeRecord.create({
+      data: { ...record, tags: { connect: record.tags } },
+    });
     return plainToInstance(Record, recordPrisma);
   }
 
@@ -34,6 +36,10 @@ export class RecordRepository {
 
   async findCurrent(userId: number) {
     const recordPrisma = await this.prisma.timeRecord.findFirst({
+      include: {
+        tags: true,
+        project: true,
+      },
       where: {
         userId,
         end: null,
@@ -44,6 +50,10 @@ export class RecordRepository {
 
   async findAll(userId: number) {
     const recordPrisma = await this.prisma.timeRecord.findMany({
+      include: {
+        tags: true,
+        project: true,
+      },
       where: {
         userId,
       },

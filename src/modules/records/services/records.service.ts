@@ -13,16 +13,27 @@ import { Record } from '../entities/record.entity';
 export class RecordsService {
   constructor(private recordRepository: RecordRepository) {}
 
-  async startTracking(userId: number, createRecordDto: StartRecordDto) {
-    const current = await this.findCurrent(userId);
-    if (current) {
-      throw new BadRequestException('Already have a record started.');
+  async save(userId: number, record: Record) {
+    if (!record.end) {
+      await this.stopTrackingIfNecessary(userId);
     }
+    return this.recordRepository.create(record);
+  }
+
+  async startTracking(userId: number, createRecordDto: StartRecordDto) {
+    await this.stopTrackingIfNecessary(userId);
     const record = new Record();
     record.title = createRecordDto.title;
     record.userId = userId;
     record.startTracking();
     return this.recordRepository.create(record);
+  }
+
+  async stopTrackingIfNecessary(userId: number){
+    const current = await this.findCurrent(userId);
+    if (current) {
+      await this.stopTracking(userId, current.id);
+    }
   }
 
   async stopTracking(userId: number, recordId: number) {
