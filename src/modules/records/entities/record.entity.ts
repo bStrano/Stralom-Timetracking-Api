@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Tag } from '../../tags/entities/tag.entity';
 import { Project } from '../../projects/entities/project.entity';
+import { differenceInSeconds } from 'date-fns';
+import { Expose } from 'class-transformer';
 
 export class Record {
   @ApiProperty()
@@ -28,5 +30,11 @@ export class Record {
 
   isFinished() {
     return this.end != null;
+  }
+
+  @Expose()
+  elapsedTime() {
+    if (!this.start || !this.end) return 0;
+    return differenceInSeconds(this.end, this.start);
   }
 }

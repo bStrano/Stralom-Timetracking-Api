@@ -8,6 +8,8 @@ import { StartRecordDto } from '../dto/start-record.dto';
 import { UpdateRecordDto } from '../dto/update-record.dto';
 import { RecordRepository } from '../repositories/record.repository';
 import { Record } from '../entities/record.entity';
+import { Tag } from '../../tags/entities/tag.entity';
+import { Project } from '../../projects/entities/project.entity';
 
 @Injectable()
 export class RecordsService {
@@ -28,6 +30,16 @@ export class RecordsService {
     await this.stopTrackingIfNecessary(userId);
     const record = new Record();
     record.title = createRecordDto.title;
+    record.tags = createRecordDto.tags?.map((item) => {
+      const tag = new Tag();
+      tag.id = item.id;
+      return tag;
+    });
+    if (createRecordDto.projectId) {
+      record.project = new Project();
+      record.project.id = createRecordDto.projectId;
+    }
+
     record.userId = userId;
     record.startTracking();
     return this.recordRepository.create(record);

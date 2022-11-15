@@ -10,7 +10,11 @@ export class RecordRepository {
 
   async create(record: Omit<Record, 'id'>) {
     const recordPrisma = await this.prisma.timeRecord.create({
-      data: { ...record, tags: { connect: record.tags } },
+      data: {
+        ...record,
+        tags: { connect: record.tags },
+        project: { connect: record.project },
+      },
     });
     return plainToInstance(Record, recordPrisma);
   }
@@ -63,6 +67,7 @@ export class RecordRepository {
         },
       ],
     });
+    console.log(recordPrisma);
     return plainToInstance(Record, recordPrisma);
   }
 
