@@ -14,8 +14,12 @@ export class RecordsService {
   constructor(private recordRepository: RecordRepository) {}
 
   async save(userId: number, record: Record) {
+    record.userId = userId;
     if (!record.end) {
       await this.stopTrackingIfNecessary(userId);
+    }
+    if (!record.start) {
+      return this.startTracking(userId, record);
     }
     return this.recordRepository.create(record);
   }
@@ -29,7 +33,7 @@ export class RecordsService {
     return this.recordRepository.create(record);
   }
 
-  async stopTrackingIfNecessary(userId: number){
+  async stopTrackingIfNecessary(userId: number) {
     const current = await this.findCurrent(userId);
     if (current) {
       await this.stopTracking(userId, current.id);
